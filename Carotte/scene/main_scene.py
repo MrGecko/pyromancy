@@ -7,7 +7,6 @@ __author__ = 'Gecko'
 
 
 
-
 class MainScene(Scene):
 
     def __init__(self, egg):

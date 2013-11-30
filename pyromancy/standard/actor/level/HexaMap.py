@@ -1,7 +1,10 @@
+from random import randint as rdi
+
 from Carotte.terrain.Carotte import Carotte
 from pyromancy.core.actor.ActorGroup import ActorGroup
 from pyromancy.standard.actor.level.Cell import Cell
 from pyromancy.standard.actor.physic.position_actor import PositionActor
+
 
 __author__ = 'Gecko'
 
@@ -53,24 +56,23 @@ class HexaMap(ActorGroup):
                 x += 2
             q += 1
 
-        grid = []
         #create the cells
+        grid = []
         for cx, cy, layer in coords:
-            for z in d_range:
-                #print cx, cy, layer
-                grid.append(self.__create_cell_from_carotte(self.__carotte, cx, cy, z, layer))
-            break
+            d_range = range(1, rdi(8, 9), 1)
+            carotte = [self.__create_cell_from_carotte(self.__carotte, cx, cy, z, layer) for z in d_range]
+            grid.extend(carotte)
 
         return grid
 
     def __get_cell_iso_coords(self, x, y, z):
-        pos = self.get_child("position")
-
-        k = y * self.__q + (self.__edge_length - 1) * z
-
+        #horizontal coord
         x2 = x * self.__t
+        #vertical coord with a shift for the odd columns
+        k = y * self.__q + (self.__edge_length - 1) * z
         y2 = k if (x % 2 == 0) else k - self.__q * 0.5
-
+        #position offset for the map itself
+        pos = self.get_child("position")
         return pos.x + x2, pos.y + y2
 
 
