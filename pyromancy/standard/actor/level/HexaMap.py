@@ -1,6 +1,5 @@
-from random import randint as rdi
-
 from Carotte.terrain.Carotte import Carotte
+from Carotte.terrain.heightmap import create_2d_texture_random
 from pyromancy.core.actor.ActorGroup import ActorGroup
 from pyromancy.standard.actor.level.Cell import Cell
 from pyromancy.standard.actor.physic.position_actor import PositionActor
@@ -11,7 +10,7 @@ __author__ = 'Gecko'
 
 class HexaMap(ActorGroup):
 
-    def __init__(self, sprite_factory, cell_batch, (w, h, d), (cell_w, cell_h, edge_len), (x, y)=(0, 0)):
+    def __init__(self, sprite_factory, cell_batch, (w, h, d, thickness), (cell_w, cell_h, edge_len), (x, y)=(0, 0)):
         super(HexaMap, self).__init__("hexamap")
         self.add_child(PositionActor(x, y))
 
@@ -20,6 +19,9 @@ class HexaMap(ActorGroup):
         self.__edge_length = edge_len
 
         self.__carotte = Carotte(sprite_factory, cell_batch, size=d)
+
+        self.__heightmap = create_2d_texture_random(w, h, d, 1.0/20)
+        self.__thickness = thickness
 
         self.__grid = self.gen_grid(w-1, h-1, d)
 
@@ -59,7 +61,8 @@ class HexaMap(ActorGroup):
         #create the cells
         grid = []
         for cx, cy, layer in coords:
-            d_range = range(1, rdi(8, 9), 1)
+            d_range = range(1, self.__thickness)
+            d_range += range(self.__thickness, self.__thickness+self.__heightmap[cx + cy*w], 1)
             carotte = [self.__create_cell_from_carotte(self.__carotte, cx, cy, z, layer) for z in d_range]
             grid.extend(carotte)
 

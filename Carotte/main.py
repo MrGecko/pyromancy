@@ -10,7 +10,7 @@ __author__ = 'Gecko'
 
 class Application(Egg):
     def __init__(self):
-        super(Application, self).__init__(960, 600)
+        super(Application, self).__init__(1200, 700)
         self.background_color = (8 / 255.0, 8 / 255.0, 8 / 255.0, 255)
 
         scene = MainScene(self)
