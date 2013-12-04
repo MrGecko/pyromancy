@@ -30,14 +30,15 @@ class InitGameState(SceneState):
         ship_weapon_sprite = self.__sprite_factory.create_extended_sprite(
             "media.playerunit.light.sparrow.Rebel", layer="ship", batch=self.batch_manager.current_batch
         )
-        ship_weapon = ActorGroup("ship_weapon", [PositionActor(20, 10, ship_actor), SpriteActor("rebel02", ship_weapon_sprite)])
+        ship_weapon = ActorGroup("ship_weapon",
+                                 [PositionActor(20, 10, ship_actor), SpriteActor("rebel02", ship_weapon_sprite)])
         ship_actor.add_child(ship_weapon)
 
         self.__game_objects.add_child(ship_actor)
 
 
     def init_map(self):
-        hexamap = HexaMap(self.__sprite_factory, self.batch_manager.current_batch, (61, 61, 5, 10), (59, 59, 25))
+        hexamap = HexaMap(self.__sprite_factory, self.batch_manager.current_batch, (68, 63, 4, 3), (59, 59, 25))
         self.__game_objects.add_child(hexamap)
 
 

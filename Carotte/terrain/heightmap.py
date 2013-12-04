@@ -5,13 +5,14 @@ from random import randint as rdi
 from noise import pnoise3
 
 
-def create_2d_texture_random(width, height, d, scaleB):
+def create_2d_texture_random(width, height, d, scaleB, z=None):
     y_coords = range(height)
     x_coords = range(width)
 
     texel_final = []
 
-    z = rdi(-10000, 10000)
+    if z is None:
+        z = rdi(-10000, 10000)
     scaleA = 1
 
     half = 0
@@ -36,7 +37,7 @@ def create_2d_texture_random(width, height, d, scaleB):
     texel_final = [p + m for p in texel_final]
     coeff = float(d) / max(texel_final)
     texel_final = [int(coeff * p) for p in texel_final]
-    return texel_final
+    return (z, texel_final)
 
 
 if __name__ == '__main__':

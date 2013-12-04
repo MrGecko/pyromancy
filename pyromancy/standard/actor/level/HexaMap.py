@@ -14,13 +14,22 @@ class HexaMap(ActorGroup):
         super(HexaMap, self).__init__("hexamap")
         self.add_child(PositionActor(x, y))
 
+        w = w if w % 2 != 0 else w + 1
+        h = h if h % 2 != 0 else h + 1
+
         self.__t = edge_len + (cell_w - edge_len - 2) * 0.5
         self.__q = cell_h - edge_len
         self.__edge_length = edge_len
 
-        self.__carotte = Carotte(sprite_factory, cell_batch, size=d)
+        heightmap_seed, heightmap = create_2d_texture_random(w, h, d, 1.0/20)
 
-        self.__heightmap = create_2d_texture_random(w, h, d, 1.0/20)
+        self.__heightmap = heightmap
+
+        texture_maps = [create_2d_texture_random(w, h, d, 1.0/20) for i in range(0, d-1)]
+        texture_maps.append((heightmap_seed, heightmap))
+
+        self.__carotte = Carotte(w, h, d, thickness, sprite_factory, cell_batch, texture_maps)
+
         self.__thickness = thickness
 
         self.__grid = self.gen_grid(w-1, h-1, d)

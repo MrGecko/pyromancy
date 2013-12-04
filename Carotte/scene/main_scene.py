@@ -38,4 +38,6 @@ class MainScene(Scene):
         load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
         load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
         load_image("media.terrain.clay", "media/terrain/clayhex.png")
+        load_image("media.terrain.clay.light", "media/terrain/clayhex_light.png")
+
 
