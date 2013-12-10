@@ -1,5 +1,4 @@
-from Carotte.terrain.Carotte import Carotte
-from Carotte.terrain.heightmap import create_2d_texture_random
+from pyromancy.standard.actor.level.terrain.heightmap import create_2d_texture_random as make_perlin
 from pyromancy.core.actor.ActorGroup import ActorGroup
 from pyromancy.standard.actor.level.Cell import Cell
 from pyromancy.standard.actor.physic.position_actor import PositionActor
@@ -9,35 +8,44 @@ __author__ = 'Gecko'
 
 
 class HexaMap(ActorGroup):
+    TEXTURES = {
+        "common": "media.terrain.clay",
+        "top": "media.terrain.clay.light"
+    }
 
     def __init__(self, sprite_factory, cell_batch, (w, h, d, thickness), (cell_w, cell_h, edge_len), (x, y)=(0, 0)):
         super(HexaMap, self).__init__("hexamap")
         self.add_child(PositionActor(x, y))
+        self.__pos = self.get_child("position")
 
-        w = w if w % 2 != 0 else w + 1
-        h = h if h % 2 != 0 else h + 1
+        self.__cell_batch = cell_batch
+        self.__create_extended_sprite = sprite_factory.create_extended_sprite
 
         self.__t = edge_len + (cell_w - edge_len - 2) * 0.5
         self.__q = cell_h - edge_len
         self.__edge_length = edge_len
 
-        heightmap_seed, heightmap = create_2d_texture_random(w, h, d, 1.0/20)
+        self.__map_width = w if w % 2 != 0 else w + 1
+        self.__map_height = h if h % 2 != 0 else h + 1
+        self.__map_depth = d
+        self.__thickness = thickness
+
+        heightmap_seed, heightmap = make_perlin(self.__map_width, self.__map_height, self.__map_depth, 1.0 / 20)
 
         self.__heightmap = heightmap
 
-        texture_maps = [create_2d_texture_random(w, h, d, 1.0/20) for i in range(0, d-1)]
-        texture_maps.append((heightmap_seed, heightmap))
+        self.__texture_maps = []
+        for i in range(0, self.__map_depth - 1):
+            self.__texture_maps.append(make_perlin(self.__map_width, self.__map_height, self.__map_depth, 1.0 / 20))
+        self.__texture_maps.append((heightmap_seed, heightmap))
 
-        self.__carotte = Carotte(w, h, d, thickness, sprite_factory, cell_batch, texture_maps)
-
-        self.__thickness = thickness
-
-        self.__grid = self.gen_grid(w-1, h-1, d)
+        #finally generate the map
+        self.__grid = self.gen_grid(self.__map_width - 1, self.__map_height - 1, self.__map_depth)
 
     def gen_grid(self, w, h, d):
         #generate the cell coords
         #create the upper part of the map (the upper diagonal starts from the upper left corner)
-        d_range = range(0, d, 1)
+        #d_range = range(0, d, 1)
         layer = 0
         coords = [(0, h, layer)]
         ly = [0]
@@ -71,37 +79,40 @@ class HexaMap(ActorGroup):
         grid = []
         for cx, cy, layer in coords:
             d_range = range(1, self.__thickness)
-            d_range += range(self.__thickness, self.__thickness+self.__heightmap[cx + cy*w], 1)
-            carotte = [self.__create_cell_from_carotte(self.__carotte, cx, cy, z, layer) for z in d_range]
+            d_range += range(self.__thickness, self.__thickness + self.__heightmap[cx + cy * w], 1)
+            carotte = [self.__create_cell(cx, cy, z, layer) for z in d_range]
             grid.extend(carotte)
 
         return grid
 
-    def __get_cell_iso_coords(self, x, y, z):
+    def __iso_to_screenspace_coords(self, x, y, z):
         #horizontal coord
         x2 = x * self.__t
         #vertical coord with a shift for the odd columns
         k = y * self.__q + (self.__edge_length - 1) * z
         y2 = k if (x % 2 == 0) else k - self.__q * 0.5
         #position offset for the map itself
-        pos = self.get_child("position")
-        return pos.x + x2, pos.y + y2
 
+        return self.__pos.x + x2, self.__pos.y + y2
 
-    def __create_cell_from_carotte(self, carotte, x, y, z, layer):
-
-        iso = self.__get_cell_iso_coords(x, y, z)
-
-        sprite = carotte.get_cell_sprite(x, y, z, layer)
+    def __create_cell(self, x, y, z, layer):
+        iso = self.__iso_to_screenspace_coords(x, y, z)
+        sprite = self.get_cell_sprite(x, y, z, layer)
         sprite.x = iso[0]
         sprite.y = iso[1]
+        return Cell(x, y, z, sprite)
 
-        new_cell = Cell(x, y, z, sprite)
+    def get_cell_sprite(self, x, y, z, layer):
+        #TODO:a nettoyer
+        symbol = "common"
+        if z >= self.__thickness:
+            lvl = self.__texture_maps[-1][1][x + y * self.__map_width]
+            if lvl >= self.__map_depth * 0.55:
+                symbol = "top"
 
-        #new_cell.add_children([
-        #    PositionActor(iso[0], iso[1], relative_actor=self),
-        #    SpriteActor("sprite", sprite)
-        #])
-
-        return new_cell
-
+        new_sprite = self.__create_extended_sprite(
+            symbol=HexaMap.TEXTURES[symbol],
+            layer=layer,
+            batch=self.__cell_batch
+        )
+        return new_sprite

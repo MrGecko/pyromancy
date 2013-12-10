@@ -5,11 +5,10 @@ __author__ = 'Gecko'
 class Cell(object):
     
     def __init__(self, x, y, z, sprite):
-        #super(Cell, self).__init__(name)
         self.__x = x
         self.__y = y
         self.__z = z
-        self.__data = {"mat": "clay"}
+        self.__data = {"mat": "clay"} #dummy data
         self.__sprite = sprite
 
     @property
