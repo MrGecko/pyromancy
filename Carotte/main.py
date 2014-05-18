@@ -1,11 +1,10 @@
 import pyglet
+
 from pyromancy.core.egg import Egg
 from scene.main_scene import MainScene
 
 
 __author__ = 'Gecko'
-
-
 
 
 class Application(Egg):

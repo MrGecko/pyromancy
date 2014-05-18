@@ -35,21 +35,21 @@ class HexaMap(ActorGroup):
         self.__heightmap = heightmap
 
         self.__texture_maps = []
-        for i in range(0, self.__map_depth - 1):
-            self.__texture_maps.append(make_perlin(self.__map_width, self.__map_height, self.__map_depth, 1.0 / 20))
+        # for i in range(0, self.__map_depth - 1):
+        #    self.__texture_maps.append(make_perlin(self.__map_width, self.__map_height, self.__map_depth, 1.0 / 20))
         self.__texture_maps.append((heightmap_seed, heightmap))
 
         #finally generate the map
         self.__grid = self.gen_grid(self.__map_width - 1, self.__map_height - 1, self.__map_depth)
 
     def gen_grid(self, w, h, d):
-        #generate the cell coords
+        # generate the cell coords
         #create the upper part of the map (the upper diagonal starts from the upper left corner)
         #d_range = range(0, d, 1)
         layer = 0
         coords = [(0, h, layer)]
         ly = [0]
-        for x in range(2, w+2, 2):
+        for x in range(2, w + 2, 2):
             lx = range(x, -1, -1)
 
             ly.append(ly[-1])
@@ -67,7 +67,7 @@ class HexaMap(ActorGroup):
         for n in range(h, 0, -1):
             x = 0
             layer += 1
-            for i in range(1, n+1):
+            for i in range(1, n + 1):
                 coords.append((w - x, h - i - q, layer))
                 if w - x - 1 <= 0:
                     break
@@ -86,7 +86,7 @@ class HexaMap(ActorGroup):
         return grid
 
     def __iso_to_screenspace_coords(self, x, y, z):
-        #horizontal coord
+        # horizontal coord
         x2 = x * self.__t
         #vertical coord with a shift for the odd columns
         k = y * self.__q + (self.__edge_length - 1) * z
@@ -103,7 +103,7 @@ class HexaMap(ActorGroup):
         return Cell(x, y, z, sprite)
 
     def get_cell_sprite(self, x, y, z, layer):
-        #TODO:a nettoyer
+        # TODO:a nettoyer
         symbol = "common"
         if z >= self.__thickness:
             lvl = self.__texture_maps[-1][1][x + y * self.__map_width]
