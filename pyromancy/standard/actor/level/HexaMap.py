@@ -15,11 +15,12 @@ class HexaMap(ActorGroup):
 
     def __init__(self, sprite_factory, cell_batch, (w, h, d, thickness), (cell_w, cell_h, edge_len)):
         super(HexaMap, self).__init__("hexamap")
-        # self.add_child(PositionActor(x, y))
-        #self.__pos = self.get_child("position")
 
         self.__cell_batch = cell_batch
         self.__create_extended_sprite = sprite_factory.create_extended_sprite
+
+        self.__cell_width = cell_w
+        self.__cell_height = cell_h
 
         self.__t = edge_len + (cell_w - edge_len - 2) * 0.5
         self.__q = cell_h - edge_len
@@ -32,12 +33,47 @@ class HexaMap(ActorGroup):
 
         self.__heightmap = []
 
+    @property
+    def cell_width(self):
+        return self.__cell_width
+
+    @property
+    def cell_height(self):
+        return self.__cell_height
+
+    @property
+    def height_in_pixels(self):
+        return self.__cell_height * self.__map_height
+
+    @property
+    def width_in_pixels(self):
+        return self.__cell_height * self.__map_width
+
+    def get_six_neighborhood(self, cell):
+        # from bottom left and counter clockwise.
+        #then add down and up neighbors
+        names = [
+            HexaMap.make_cell_name(cell.x - 1, cell.y, cell.z),
+            HexaMap.make_cell_name(cell.x, cell.y - 1, cell.z),
+            HexaMap.make_cell_name(cell.x + 1, cell.y, cell.z),
+            HexaMap.make_cell_name(cell.x + 1, cell.y + 1, cell.z),
+            HexaMap.make_cell_name(cell.x, cell.y + 1, cell.z),
+            HexaMap.make_cell_name(cell.x - 1, cell.y + 1, cell.z),
+
+            HexaMap.make_cell_name(cell.x, cell.y, cell.z - 1),
+            HexaMap.make_cell_name(cell.x, cell.y, cell.z + 1)
+        ]
+        print names
+        hexagrid = self.get_child("hexagrid")
+        neighborhood = [n for n in [hexagrid.get_child(name) for name in names] if n is not None]
+
+        return neighborhood
 
     def gen_grid(self, seed=1.0 / 20):
         heightmap_seed, heightmap = make_perlin(self.__map_width, self.__map_height, self.__map_depth, seed)
         self.__heightmap = heightmap
 
-        w, h, d = self.__map_width - 1, self.__map_height - 1, self.__map_depth
+        w, h, d = self.__map_width - 1, self.__map_height - 1, self.__map_depth - 1
 
         # generate the cell coords
         #create the upper part of the map (the upper diagonal starts from the upper left corner)
@@ -74,8 +110,9 @@ class HexaMap(ActorGroup):
         #create the cells
         grid = []
         for cx, cy, layer in coords:
-            d_range = range(1, self.__thickness)
+            d_range = range(0, self.__thickness)
             d_range += range(self.__thickness, self.__thickness + self.__heightmap[cx + cy * w], 1)
+            #a vertical stack of cells
             carotte = [self.create_cell(cx, cy, z, layer) for z in d_range]
             grid.extend(carotte)
 
@@ -83,12 +120,11 @@ class HexaMap(ActorGroup):
         self.add_child(hexagrid)
 
     def __iso_to_screenspace_coords(self, x, y, z):
-        # horizontal coord
+        #horizontal coord
         x2 = x * self.__t
         #vertical coord with a shift for the odd columns
         k = y * self.__q + (self.__edge_length - 1) * z
         y2 = k if (x % 2 == 0) else k - self.__q * 0.5
-        #position offset for the map itself
 
         return x2, y2
 
@@ -97,7 +133,11 @@ class HexaMap(ActorGroup):
         sprite = self.__get_cell_sprite(x, y, z, layer)
         sprite.x = iso[0]
         sprite.y = iso[1]
-        return Cell(x, y, z, sprite)
+        return Cell(HexaMap.make_cell_name(x, y, z), x, y, z, sprite)
+
+    @staticmethod
+    def make_cell_name(x, y, z):
+        return "cell[%i,%i,%i]" % (x, y, z)
 
     def __get_cell_sprite(self, x, y, z, layer):
         # TODO:a nettoyer, utiliser un defaultdict

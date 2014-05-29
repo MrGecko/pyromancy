@@ -1,21 +1,21 @@
-
 import pyglet
 from pyglet.window import Window, key
 from pyglet.gl import glClearColor
 from pyglet.gl import glTexParameteri, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_2D, GL_NEAREST, GL_TEXTURE_MIN_FILTER
+
 from pyromancy.core.scene.camera import Camera
 
 
 class Egg(object):
     def __init__(self, width, height):
-        #display initializations
+        # display initializations
         self.__window = Window(width, height, vsync=True)
         self.__background_color = (0, 0, 0, 1.0)
         #self._fps_display = pyglet.clock.ClockDisplay()
-        self._key_state_handler = key.KeyStateHandler()
+        self.__key_state_handler = key.KeyStateHandler()
         self.__scene = None
         self.__window.event(self.on_draw)
-        self.__window.push_handlers(self._key_state_handler)
+        self.__window.push_handlers(self.__key_state_handler)
         #schedule regular updates
         pyglet.clock.schedule_interval(self.update, 1 / 100.0)
 
@@ -26,7 +26,7 @@ class Egg(object):
     @property
     def background_color(self):
         return self.__background_color
-    
+
     @background_color.setter
     def background_color(self, value):
         self.__background_color = value
@@ -51,7 +51,7 @@ class Egg(object):
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
             camera = self.__scene.root.find("main_camera")
-            #draw batches
+            # draw batches
             camera.focus(self.__window.width, self.__window.height)
             self.__scene.draw()
             #draw specific batches for the hud
@@ -61,7 +61,7 @@ class Egg(object):
     def update(self, dt):
         if self.__scene is not None:
             self.__scene.update(dt)
-            self.__scene.process_keyboard(self._key_state_handler, dt)
+            self.__scene.process_keyboard(self.__key_state_handler, dt)
             self.__scene.root.find("main_camera").update(dt)
 
 

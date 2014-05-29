@@ -1,3 +1,5 @@
+from random import choice
+
 from pyglet.window import key
 
 from pyromancy.core.gamestate.scenestate import SceneState
@@ -32,21 +34,31 @@ class PlayGameState(SceneState):
         if handler[key.SPACE]:
             # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
             hexamap = self.scene.root.find("hexamap")
-            hexamap.gen_grid()
-
+            if hexamap:
+                hexamap.gen_grid()
 
         if handler[key.H]:
-            # self.scene.root.find("ship_weapon").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
-            pass
+            self.clean_up()
+
+        if handler[key.E]:
+            hexamap = self.scene.root.find("hexamap")
+            if hexamap:
+                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
+                random_cell = hexamap.get_child("hexagrid").get_child(hexamap.make_cell_name(0, 0, 1))
+                neighborhood = hexamap.get_six_neighborhood(random_cell)
+                print "random cell: %s" % random_cell
+                print "neighborhood: ", neighborhood
 
         camera_dx = camera_dx * mvt_step * dt
         camera_dy = camera_dy * mvt_step * dt
 
         camera = self.scene.root.find("main_camera")
-        camera.target.x += camera_dx
-        camera.target.y += camera_dy
+        if camera:
+            camera.target.x += camera_dx
+            camera.target.y += camera_dy
 
     def clean_up(self):
-        for obj in self.scene.root.find("game_objects").get_children():
-            del obj
+        hexamap = self.scene.root.find("hexamap")
+        if hexamap:
+            hexamap.__del__()
         print "Goodbye !"

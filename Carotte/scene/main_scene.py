@@ -6,10 +6,8 @@ __author__ = 'Gecko'
 
 
 class MainScene(Scene):
-
     def __init__(self, egg):
         super(MainScene, self).__init__()
-
         batch_manager = self.root.find("batch_manager")
 
         batch_manager.add_batch("main")
@@ -26,13 +24,15 @@ class MainScene(Scene):
         self.load_resources()
         self.egg = egg
 
-        self.push(InitGameState, self)
-        self.push(PlayGameState, self)
 
         # group_manager.pprint()
 
+    def start(self):
+        self.push(InitGameState, self)
+        self.push(PlayGameState, self)
+
     def load_resources(self):
-        #self.root.find("resource_manager").add_font("media/fonts/Geo/Geo-Regular.ttf")
+        # self.root.find("resource_manager").add_font("media/fonts/Geo/Geo-Regular.ttf")
 
         load_image = self.root.find("sprite_factory").load_image
         # load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
