@@ -31,7 +31,10 @@ class PlayGameState(SceneState):
 
         if handler[key.SPACE]:
             # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
-            pass
+            hexamap = self.scene.root.find("hexamap")
+            hexamap.gen_grid()
+
+
         if handler[key.H]:
             # self.scene.root.find("ship_weapon").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
             pass

@@ -4,7 +4,6 @@ from pyglet.sprite import Sprite
 
 class ExSprite(Sprite):
     def __init__(self, tileset, x=0, y=0, start_frame=0, batch=None, group=None):
-
         #if tileset is None:
         #    print "[error] exsprite: 'None' is not a correct tileset"
         self.__tileset = tileset

@@ -31,8 +31,13 @@ class InitGameState(SceneState):
 
     def init_map(self):
         hexamap = HexaMap(self.__sprite_factory, self.batch_manager.current_batch,
-                          (16, 16, 2, 2), (59, 59, 25))
-        self.__game_objects.add_child(hexamap)
+                          (48, 48, 3, 2), (59, 59, 25))
+
+        # grid = hexamap.gen_grid()
+
+        self.scene.root.find("game_objects").add_child(hexamap)
+
+
 
     def pause(self):
         print "Init... done"
