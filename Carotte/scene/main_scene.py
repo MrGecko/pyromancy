@@ -5,8 +5,6 @@ from play_gamestate import PlayGameState
 __author__ = 'Gecko'
 
 
-
-
 class MainScene(Scene):
 
     def __init__(self, egg):
@@ -31,12 +29,14 @@ class MainScene(Scene):
         self.push(InitGameState, self)
         self.push(PlayGameState, self)
 
+        # group_manager.pprint()
+
     def load_resources(self):
-        self.root.find("resource_manager").add_font("media/fonts/Geo/Geo-Regular.ttf")
+        #self.root.find("resource_manager").add_font("media/fonts/Geo/Geo-Regular.ttf")
 
         load_image = self.root.find("sprite_factory").load_image
-        load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
-        load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
+        # load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
+        #load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
         load_image("media.terrain.clay", "media/terrain/clayhex.png")
         load_image("media.terrain.clay.light", "media/terrain/clayhex_light.png")
 
