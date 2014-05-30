@@ -2,11 +2,10 @@ from pyromancy.core.gamestate.state import TimeLockedState
 
 
 class SceneState(TimeLockedState):
-
     def __init__(self, scene, lock=0):
         super(SceneState, self).__init__(lock)
         self.__scene = scene
-        self._hud_batches = []
+        self.__hud_batches = []
         self.__batch_manager = self.__scene.root.find("batch_manager")
         self.__hud_batch_manager = self.__scene.root.find("hud_batch_manager")
 

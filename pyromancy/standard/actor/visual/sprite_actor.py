@@ -5,7 +5,6 @@ __author__ = 'Gecko'
 
 
 class SpriteActor(Actor):
-
     SHOW = "SHOW"
     HIDE = "HIDE"
 
@@ -17,6 +16,10 @@ class SpriteActor(Actor):
         self.register(Actor.ACTOR_ADDED, self.__object_added)
 
         self.send(Actor.ACTOR_ENABLED)
+
+    @property
+    def sprite(self):
+        return self.__sprite
 
     def __move(self, sender, kargs):
         self.__sprite.set_relative_position(kargs["dx"], kargs["dy"])

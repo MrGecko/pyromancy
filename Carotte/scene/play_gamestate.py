@@ -9,14 +9,33 @@ __author__ = 'Gecko'
 
 
 class PlayGameState(SceneState):
-
-    def __init__(self, scene):
-        super(PlayGameState, self).__init__(scene, 5)
+    def __init__(self, scene, lock=1):
+        super(PlayGameState, self).__init__(scene, lock)
 
     def process_keyboard(self, handler, dt):
         self.process_camera(handler, dt)
-        if handler[key.T]:
-            print "hello, i'm the PlayGameState scene state (dt: %s)" % dt
+
+        if handler[key.SPACE]:
+            # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
+            hexamap = self.scene.root.find("hexamap")
+            if hexamap:
+                hexamap.gen_grid()
+
+        if handler[key.H]:
+            hexamap = self.scene.root.find("hexamap")
+            random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
+            # print random_cell,
+            new_cell = hexamap.add_cell(random_cell.x, random_cell.y, random_cell.z + 1)
+            # print new_cell
+
+        if handler[key.E]:
+            hexamap = self.scene.root.find("hexamap")
+            if hexamap:
+                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
+                neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
+                print "random cell: %s" % random_cell
+                print "neighborhood: ", neighborhood
+
 
     def process_camera(self, handler, dt):
         mvt_step = 800
@@ -31,24 +50,6 @@ class PlayGameState(SceneState):
         if handler[key.W] or handler[key.Z]:
             camera_dy = 1
 
-        if handler[key.SPACE]:
-            # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
-            hexamap = self.scene.root.find("hexamap")
-            if hexamap:
-                hexamap.gen_grid()
-
-        if handler[key.H]:
-            self.clean_up()
-
-        if handler[key.E]:
-            hexamap = self.scene.root.find("hexamap")
-            if hexamap:
-                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
-                random_cell = hexamap.get_child("hexagrid").get_child(hexamap.make_cell_name(0, 0, 1))
-                neighborhood = hexamap.get_six_neighborhood(random_cell)
-                print "random cell: %s" % random_cell
-                print "neighborhood: ", neighborhood
-
         camera_dx = camera_dx * mvt_step * dt
         camera_dy = camera_dy * mvt_step * dt
 
@@ -57,8 +58,8 @@ class PlayGameState(SceneState):
             camera.target.x += camera_dx
             camera.target.y += camera_dy
 
-    def clean_up(self):
-        hexamap = self.scene.root.find("hexamap")
-        if hexamap:
-            hexamap.__del__()
-        print "Goodbye !"
+
+    def update(self, dt):
+        super(PlayGameState, self).update(dt)
+        if not self.locked:
+            self.scene.next_step()

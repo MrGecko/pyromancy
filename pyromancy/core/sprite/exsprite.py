@@ -13,6 +13,10 @@ class ExSprite(Sprite):
         super(ExSprite, self).__init__(x=x, y=y, img=self.__tileset["frames"][start_frame], batch=batch, group=group)
         #self.set_absolute_position(x, y)
 
+    @property
+    def group(self):
+        return self._get_group()
+
     def set_animation(self, frame_list, speed, loop=True):
         self.image = pyglet.image.Animation.from_image_sequence([self.__tileset["frames"][i] for i in frame_list], speed, loop)
 

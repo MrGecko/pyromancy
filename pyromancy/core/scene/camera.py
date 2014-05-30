@@ -8,9 +8,10 @@ from __future__ import division
 from math import sin, cos
 
 from pyglet.gl import (
-    glLoadIdentity, glMatrixMode, gluLookAt, gluOrtho2D,
+    glLoadIdentity, glMatrixMode, gluLookAt, glOrtho,
     GL_MODELVIEW, GL_PROJECTION,
 )
+
 from pyromancy.core.actor.ActorGroup import ActorGroup
 
 
@@ -51,6 +52,8 @@ class Camera(ActorGroup):
         self.friction = friction
         self.target = Target(self)
         self.add_child(self.target)
+        self.near_plane = 0.5
+        self.far_plane = 10000
 
     def zoom(self, factor):
         self.target.scale *= factor
@@ -85,12 +88,9 @@ class Camera(ActorGroup):
         glLoadIdentity()
 
         aspect = width / float(height)
-        gluOrtho2D(
-            -self.scale * aspect,
-            +self.scale * aspect,
-            -self.scale,
-            +self.scale)
-            
+        # gluOrtho2D(-self.scale * aspect, +self.scale * aspect, -self.scale, +self.scale)
+        glOrtho(-self.scale * aspect, +self.scale * aspect, -self.scale, +self.scale, self.near_plane, self.far_plane)
+
         # Set modelview matrix to move, scale & rotate to camera position"
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
@@ -103,7 +103,7 @@ class Camera(ActorGroup):
     def hud_mode(self, width, height):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluOrtho2D(0, width, 0, height)
+        glOrtho(0, width, 0, height, self.near_plane, self.far_plane)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 

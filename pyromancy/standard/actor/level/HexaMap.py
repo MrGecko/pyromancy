@@ -49,25 +49,35 @@ class HexaMap(ActorGroup):
     def width_in_pixels(self):
         return self.__cell_height * self.__map_width
 
-    def get_six_neighborhood(self, cell):
-        # from bottom left and counter clockwise.
-        #then add down and up neighbors
-        names = [
-            HexaMap.make_cell_name(cell.x - 1, cell.y, cell.z),
-            HexaMap.make_cell_name(cell.x, cell.y - 1, cell.z),
-            HexaMap.make_cell_name(cell.x + 1, cell.y, cell.z),
-            HexaMap.make_cell_name(cell.x + 1, cell.y + 1, cell.z),
-            HexaMap.make_cell_name(cell.x, cell.y + 1, cell.z),
-            HexaMap.make_cell_name(cell.x - 1, cell.y + 1, cell.z),
-
-            HexaMap.make_cell_name(cell.x, cell.y, cell.z - 1),
-            HexaMap.make_cell_name(cell.x, cell.y, cell.z + 1)
+    def get_six_neighborhood_names(self, x, y, z):
+        return [
+            HexaMap.make_cell_name(x - 1, y, z),
+            HexaMap.make_cell_name(x, y - 1, z),
+            HexaMap.make_cell_name(x + 1, y, z),
+            HexaMap.make_cell_name(x + 1, y + 1, z),
+            HexaMap.make_cell_name(x, y + 1, z),
+            HexaMap.make_cell_name(x - 1, y + 1, z)
         ]
-        print names
-        hexagrid = self.get_child("hexagrid")
-        neighborhood = [n for n in [hexagrid.get_child(name) for name in names] if n is not None]
 
-        return neighborhood
+    def get_eight_neighborhood_names(self, x, y, z):
+        names = self.get_six_neighborhood_names(x, y, z)
+        names.extend([HexaMap.make_cell_name(x, y, z - 1),
+                      HexaMap.make_cell_name(x, y, z + 1)])
+        return names
+
+    def get_neighborhood(self, names):
+        hexagrid = self.get_child("hexagrid")
+        return [n for n in [hexagrid.get_child(name) for name in names] if n is not None]
+
+
+    def get_six_neighborhood(self, x, y, z):
+        names = self.get_six_neighborhood_names(x, y, z)
+        return self.get_neighborhood(names)
+
+
+    def get_eight_neighborhood(self, x, y, z):
+        names = self.get_eight_neighborhood_names(x, y, z)
+        return self.get_neighborhood(names)
 
     def gen_grid(self, seed=1.0 / 20):
         heightmap_seed, heightmap = make_perlin(self.__map_width, self.__map_height, self.__map_depth, seed)
@@ -79,7 +89,7 @@ class HexaMap(ActorGroup):
         #create the upper part of the map (the upper diagonal starts from the upper left corner)
         #d_range = range(0, d, 1)
         layer = 0
-        coords = [(0, h, layer)]
+        coords = [(0, h)]
         ly = [0]
         for x in range(2, w + 2, 2):
             lx = range(x, -1, -1)
@@ -91,7 +101,7 @@ class HexaMap(ActorGroup):
             for i in range(0, len(lx)):
                 cy = h - ly[i]
                 if cy >= 0:
-                    coords.append((lx[i], cy, "map.layer%i" % layer))
+                    coords.append((lx[i], cy))
 
         #create the second part (the lower diagonal) of the map
         #it starts from the upper right corner
@@ -100,20 +110,20 @@ class HexaMap(ActorGroup):
             x = 0
             layer += 1
             for i in range(1, n + 1):
-                coords.append((w - x, h - i - q, "map.layer%i" % layer))
+                coords.append((w - x, h - i - q))
                 if w - x - 1 <= 0:
                     break
-                coords.append((w - x - 1, h - i - q, "map.layer%i" % layer))
+                coords.append((w - x - 1, h - i - q))
                 x += 2
             q += 1
 
         #create the cells
         grid = []
-        for cx, cy, layer in coords:
+        for cx, cy in coords:
             d_range = range(0, self.__thickness)
             d_range += range(self.__thickness, self.__thickness + self.__heightmap[cx + cy * w], 1)
             #a vertical stack of cells
-            carotte = [self.create_cell(cx, cy, z, layer) for z in d_range]
+            carotte = [self.__create_cell(cx, cy, z) for z in d_range]
             grid.extend(carotte)
 
         hexagrid = HexaGrid(grid)
@@ -128,12 +138,26 @@ class HexaMap(ActorGroup):
 
         return x2, y2
 
-    def create_cell(self, x, y, z, layer):
+    def __create_cell(self, x, y, z, layer=None):
+        new_name = HexaMap.make_cell_name(x, y, z)
         iso = self.__iso_to_screenspace_coords(x, y, z)
+        if layer is None:
+            layer = "map.layer.carotte[%i,%i]" % (x, y)
         sprite = self.__get_cell_sprite(x, y, z, layer)
         sprite.x = iso[0]
         sprite.y = iso[1]
-        return Cell(HexaMap.make_cell_name(x, y, z), x, y, z, sprite)
+        cell = Cell(new_name, x, y, z, sprite)
+        return cell
+
+    def add_cell(self, x, y, z):
+        new_name = HexaMap.make_cell_name(x, y, z)
+        cell = self.get_child("hexagrid").get_child(new_name)
+        if cell is None:
+            cell = self.__create_cell(x, y, z)
+
+            self.get_child("hexagrid").add_child(cell)
+        return cell
+
 
     @staticmethod
     def make_cell_name(x, y, z):
