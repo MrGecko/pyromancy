@@ -1,6 +1,6 @@
 from pyromancy.core.actor.Actor import Actor
 
-from pyromancy.core.sprite.exsprite import ExSprite
+from pyromancy.core.sprite.exsprite import ExSprite, ZExSprite
 
 
 class SpriteFactory(Actor):
@@ -23,8 +23,13 @@ class SpriteFactory(Actor):
             self.__symbols[name] = self.__scene.root.find("resource_manager").load_image(filename, options)
         return self.__symbols[name]
 
-
     def create_extended_sprite(self, symbol, **kargs):
+        return self.create_sprite(ExSprite, symbol, **kargs)
+
+    def create_extended_zsprite(self, symbol, **kargs):
+        return self.create_sprite(ZExSprite, symbol, **kargs)
+
+    def create_sprite(self, sprite_impl, symbol, **kargs):
 
         if isinstance(symbol, basestring):
             #if symbol in self.__sprites:
@@ -45,7 +50,7 @@ class SpriteFactory(Actor):
         if not "batch" in kargs or kargs["batch"] is None:
             raise ValueError("[Error SpriteFactory] You should provide a valid value for the 'Batch' argument")
 
-        new_sprite = ExSprite(tileset, **kargs)
+        new_sprite = sprite_impl(tileset, **kargs)
         #self.__sprites[symbol] = new_sprite
         return new_sprite
         

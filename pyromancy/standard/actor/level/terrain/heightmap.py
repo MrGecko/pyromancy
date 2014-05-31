@@ -26,7 +26,10 @@ def create_2d_texture_random(width, height, d, scaleB, z=None):
     # transform to a 0..255 range
     m = abs(min(texel_final))
     texel_final = [p + m for p in texel_final]
-    coeff = float(d) / max(texel_final)
+    _max = max(texel_final)
+    if _max == 0:
+        _max = 1
+    coeff = float(d) / _max
     texel_final = [int(coeff * p) for p in texel_final]
     return z, texel_final
 

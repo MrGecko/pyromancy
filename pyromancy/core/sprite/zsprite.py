@@ -115,11 +115,11 @@ _is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
 
 
 class ZSpriteGroup(sprite.SpriteGroup):
-    '''Shared sprite rendering group with z-coordinate support.
+    """Shared sprite rendering group with z-coordinate support.
 
     The group is automatically coallesced with other sprite groups sharing the
     same parent group, texture and blend parameters.
-    '''
+    """
 
     def __init__(self, alpha_test_val, *args):
         super(ZSpriteGroup, self).__init__(*args)
@@ -360,7 +360,7 @@ class ZSprite(event.EventDispatcher):
         if self._subpixel:
             vertex_format = 'v3f/%s' % self._usage
         else:
-            vertex_format = 'v"i/%s' % self._usage
+            vertex_format = 'v3i/%s' % self._usage
         if self._batch is None:
             self._vertex_list = graphics.vertex_list(4,
                                                      vertex_format,
@@ -375,7 +375,7 @@ class ZSprite(event.EventDispatcher):
     def _update_position(self):
         img = self._texture
         if not self._visible:
-            vertices = [0, 0, 0, 0, 0, 0, 0, 0]
+            vertices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         elif self._rotation:
             x1 = -img.anchor_x * self._scale
             y1 = -img.anchor_y * self._scale
@@ -396,21 +396,21 @@ class ZSprite(event.EventDispatcher):
             cy = x2 * sr + y2 * cr + y
             dx = x1 * cr - y2 * sr + x
             dy = x1 * sr + y2 * cr + y
-            vertices = [ax, ay, bx, by, cx, cy, dx, dy, z]
+            vertices = [ax, ay, z, bx, by, z, cx, cy, z, dx, dy, z]
         elif self._scale != 1.0:
             x1 = self._x - img.anchor_x * self._scale
             y1 = self._y - img.anchor_y * self._scale
             x2 = x1 + img.width * self._scale
             y2 = y1 + img.height * self._scale
             z = self._z
-            vertices = [x1, y1, x2, y1, x2, y2, x1, y2, z]
+            vertices = [x1, y1, z, x2, y1, z, x2, y2, z, x1, y2, z]
         else:
             x1 = self._x - img.anchor_x
             y1 = self._y - img.anchor_y
             x2 = x1 + img.width
             y2 = y1 + img.height
             z = self._z
-            vertices = [x1, y1, x2, y1, x2, y2, x1, y2, z]
+            vertices = [x1, y1, z, x2, y1, z, x2, y2, z, x1, y2, z]
         if not self._subpixel:
             vertices = [int(v) for v in vertices]
         self._vertex_list.vertices[:] = vertices

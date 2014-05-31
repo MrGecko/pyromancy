@@ -52,7 +52,7 @@ class Camera(ActorGroup):
         self.friction = friction
         self.target = Target(self)
         self.add_child(self.target)
-        self.near_plane = 0.5
+        self.near_plane = -1000
         self.far_plane = 10000
 
     def zoom(self, factor):

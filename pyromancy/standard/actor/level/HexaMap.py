@@ -17,7 +17,7 @@ class HexaMap(ActorGroup):
         super(HexaMap, self).__init__("hexamap")
 
         self.__cell_batch = cell_batch
-        self.__create_extended_sprite = sprite_factory.create_extended_sprite
+        self.__create_extended_sprite = sprite_factory.create_extended_zsprite
 
         self.__cell_width = cell_w
         self.__cell_height = cell_h
@@ -69,11 +69,9 @@ class HexaMap(ActorGroup):
         hexagrid = self.get_child("hexagrid")
         return [n for n in [hexagrid.get_child(name) for name in names] if n is not None]
 
-
     def get_six_neighborhood(self, x, y, z):
         names = self.get_six_neighborhood_names(x, y, z)
         return self.get_neighborhood(names)
-
 
     def get_eight_neighborhood(self, x, y, z):
         names = self.get_eight_neighborhood_names(x, y, z)
@@ -141,11 +139,15 @@ class HexaMap(ActorGroup):
     def __create_cell(self, x, y, z, layer=None):
         new_name = HexaMap.make_cell_name(x, y, z)
         iso = self.__iso_to_screenspace_coords(x, y, z)
-        if layer is None:
-            layer = "map.layer.carotte[%i,%i]" % (x, y)
+
+        # hurray, it was so simple:
+        layer = z * self.__map_height - y * 2 + (x % 2 != 0)
+
         sprite = self.__get_cell_sprite(x, y, z, layer)
         sprite.x = iso[0]
         sprite.y = iso[1]
+        sprite.z = layer
+
         cell = Cell(new_name, x, y, z, sprite)
         return cell
 
@@ -173,7 +175,7 @@ class HexaMap(ActorGroup):
 
         new_sprite = self.__create_extended_sprite(
             symbol=HexaMap.TEXTURES[symbol],
-            layer=layer,
+            layer="hexamap",
             batch=self.__cell_batch
         )
         return new_sprite

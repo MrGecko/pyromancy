@@ -10,6 +10,7 @@ class SpriteActor(Actor):
 
     def __init__(self, name, sprite):
         super(SpriteActor, self).__init__(name)
+        assert sprite is not None
         self.__sprite = sprite
         self.register(PositionActor.MOVE, self.__move)
         self.register(PositionActor.MOVE_TO, self.__move_to)

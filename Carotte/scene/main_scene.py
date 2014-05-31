@@ -19,8 +19,8 @@ class MainScene(Scene):
         hud_batch_manager.select_batch("main")
 
         group_manager = self.root.find("group_manager")
-        group_manager.add_group("background", -1)
-        group_manager.add_group("hud.button")
+        group_manager.add_group("hexamap")
+        group_manager.add_group("game_objects")
 
         self.load_resources()
         self.egg = egg
@@ -43,7 +43,7 @@ class MainScene(Scene):
 
         load_image = self.root.find("sprite_factory").load_image
         # load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
-        # load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
+        load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
         load_image("media.terrain.clay", "media/terrain/clayhex.png")
         load_image("media.terrain.clay.light", "media/terrain/clayhex_light.png")
 
