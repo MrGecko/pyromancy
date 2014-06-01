@@ -42,6 +42,7 @@ class InitGameState(SceneState):
         self.scene.root.add_child(Geologist(self.scene))
         geologist = self.scene.root.find("geologist")
         geologist.initialize()
+        geologist.pprint_minerals()
 
         #initialize camera position
         camera = self.scene.root.find("main_camera")

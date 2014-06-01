@@ -9,8 +9,14 @@ class Cell(ActorGroup):
         self.x = x
         self.y = y
         self.z = z
-        self.data = {"mat": "clay"}  # dummy data
+        self.data = {
+            "material": "normal_clay",
+            "minerals": {}
+        }  # dummy data
         # self.add_child(SpriteActor("%s.sprite" % self.name, sprite))
+
+    def has_mineral(self, name):
+        return name in [self.data["minerals"]]
 
     def __repr__(self):
         return self.name
