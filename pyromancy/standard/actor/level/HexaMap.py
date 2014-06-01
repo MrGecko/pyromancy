@@ -1,7 +1,7 @@
-from core.actor.ActorGroup import ActorGroup
+from pyromancy.core.actor.ActorGroup import ActorGroup
 from pyromancy.standard.actor.level.terrain.heightmap import create_2d_texture_random as make_perlin
 from pyromancy.standard.actor.level.Cell import Cell
-from standard.actor.level.HexaGrid import HexaGrid
+from pyromancy.standard.actor.level.HexaGrid import HexaGrid
 
 
 __author__ = 'Gecko'
@@ -10,6 +10,7 @@ __author__ = 'Gecko'
 class HexaMap(ActorGroup):
     TEXTURES = {
         "common": "media.terrain.clay",
+        "bottom": "media.terrain.clay_empty.50",
         "top": "media.terrain.clay.light"
     }
 
@@ -131,18 +132,19 @@ class HexaMap(ActorGroup):
             self.get_child("hexagrid").add_child(cell)
         return cell
 
-
     @staticmethod
     def make_cell_name(x, y, z):
         return "cell[%i,%i,%i]" % (x, y, z)
 
     def __get_cell_sprite(self, x, y, z):
-        # TODO:a nettoyer, utiliser un defaultdict
+        # TODO:a nettoyer
         symbol = "common"
+        lvl = self.__heightmap[x + y * self.__map_width]
         if z >= self.__thickness:
-            lvl = self.__heightmap[x + y * self.__map_width]
             if lvl >= self.__map_depth * 0.55:
                 symbol = "top"
+        elif lvl <= self.__map_depth * 0.25:
+            symbol = "bottom"
 
         new_sprite = self.__create_extended_sprite(
             symbol=HexaMap.TEXTURES[symbol],

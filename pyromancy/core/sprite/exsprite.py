@@ -1,7 +1,7 @@
 import pyglet
 from pyglet.sprite import Sprite
 
-from core.sprite.zsprite import ZSprite
+from pyromancy.core.sprite.zsprite import ZSprite
 
 
 class ExSprite(Sprite):

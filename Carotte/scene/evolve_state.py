@@ -14,5 +14,6 @@ class EvolveGameState(PlayGameState):
             neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
             # print "random cell: %s" % random_cell
             # print "neighborhood: ", neighborhood
+            print "Evolve"
 
 
