@@ -22,7 +22,7 @@ class InitGameState(SceneState):
         ship_sprite = self.__sprite_factory.create_extended_sprite(
             "media.playerunit.light.sparrow.Rebel", layer="game_objects", batch=self.batch_manager.current_batch
         )
-        ship_actor = ActorGroup("ship", [PositionActor(500, 400), SpriteActor("rebel01", ship_sprite)])
+        ship_actor = ActorGroup("ship", [PositionActor(50, 40), SpriteActor("rebel01", ship_sprite)])
 
         ship_weapon_sprite = self.__sprite_factory.create_extended_sprite(
             "media.playerunit.light.sparrow.Rebel", layer="game_objects", batch=self.batch_manager.current_batch
@@ -34,7 +34,7 @@ class InitGameState(SceneState):
 
     def init_map(self):
         hexamap = HexaMap(self.__sprite_factory, self.batch_manager.current_batch,
-                          (100, 17, 5, 1), (59, 59, 25))
+                          (80, 31, 4, 1), (59, 59, 25))
 
         self.scene.root.find("game_objects").add_child(hexamap)
         hexamap.gen_grid()

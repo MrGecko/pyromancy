@@ -3,7 +3,8 @@ from random import choice
 from pyglet.window import key
 
 from pyromancy.core.gamestate.scenestate import SceneState
-
+from pyromancy.standard.actor.physic.position_actor import PositionActor
+from pyromancy.standard.actor.level.HexaMap import HexaMap
 
 __author__ = 'Gecko'
 
@@ -16,7 +17,7 @@ class PlayGameState(SceneState):
         self.process_camera(handler, dt)
 
         if handler[key.SPACE]:
-            # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
+            self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
             hexamap = self.scene.root.find("hexamap")
             if hexamap:
                 hexamap.gen_grid()
@@ -32,7 +33,7 @@ class PlayGameState(SceneState):
             hexamap = self.scene.root.find("hexamap")
             if hexamap:
                 random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
-                neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
+                neighborhood = HexaMap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
                 print "random cell: %s" % random_cell
                 print "neighborhood: ", neighborhood
 

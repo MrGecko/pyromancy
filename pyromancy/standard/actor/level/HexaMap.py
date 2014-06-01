@@ -49,7 +49,8 @@ class HexaMap(ActorGroup):
     def width_in_pixels(self):
         return self.__cell_height * self.__map_width
 
-    def get_six_neighborhood_names(self, x, y, z):
+    @staticmethod
+    def get_six_neighborhood_names(x, y, z):
         return [
             HexaMap.make_cell_name(x - 1, y, z),
             HexaMap.make_cell_name(x, y - 1, z),
@@ -59,8 +60,9 @@ class HexaMap(ActorGroup):
             HexaMap.make_cell_name(x - 1, y + 1, z)
         ]
 
-    def get_eight_neighborhood_names(self, x, y, z):
-        names = self.get_six_neighborhood_names(x, y, z)
+    @staticmethod
+    def get_eight_neighborhood_names(x, y, z):
+        names = HexaMap.get_six_neighborhood_names(x, y, z)
         names.extend([HexaMap.make_cell_name(x, y, z - 1),
                       HexaMap.make_cell_name(x, y, z + 1)])
         return names
@@ -83,46 +85,15 @@ class HexaMap(ActorGroup):
 
         w, h, d = self.__map_width - 1, self.__map_height - 1, self.__map_depth - 1
 
-        # generate the cell coords
-        #create the upper part of the map (the upper diagonal starts from the upper left corner)
-        #d_range = range(0, d, 1)
-        layer = 0
-        coords = [(0, h)]
-        ly = [0]
-        for x in range(2, w + 2, 2):
-            lx = range(x, -1, -1)
-
-            ly.append(ly[-1])
-            ly.append(ly[-1] + 1)
-
-            layer += 1
-            for i in range(0, len(lx)):
-                cy = h - ly[i]
-                if cy >= 0:
-                    coords.append((lx[i], cy))
-
-        #create the second part (the lower diagonal) of the map
-        #it starts from the upper right corner
-        q = 0
-        for n in range(h, 0, -1):
-            x = 0
-            layer += 1
-            for i in range(1, n + 1):
-                coords.append((w - x, h - i - q))
-                if w - x - 1 <= 0:
-                    break
-                coords.append((w - x - 1, h - i - q))
-                x += 2
-            q += 1
-
         #create the cells
         grid = []
-        for cx, cy in coords:
-            d_range = range(0, self.__thickness)
-            d_range += range(self.__thickness, self.__thickness + self.__heightmap[cx + cy * w], 1)
-            #a vertical stack of cells
-            carotte = [self.__create_cell(cx, cy, z) for z in d_range]
-            grid.extend(carotte)
+        for x in range(0, w):
+            for y in range(0, h):
+                d_range = range(0, self.__thickness)
+                d_range += range(self.__thickness, self.__thickness + self.__heightmap[x + y * w], 1)
+                # a vertical stack of cells
+                carotte = [self.__create_cell(x, y, z) for z in d_range]
+                grid.extend(carotte)
 
         hexagrid = HexaGrid(grid)
         self.add_child(hexagrid)
@@ -136,14 +107,14 @@ class HexaMap(ActorGroup):
 
         return x2, y2
 
-    def __create_cell(self, x, y, z, layer=None):
+    def __create_cell(self, x, y, z):
         new_name = HexaMap.make_cell_name(x, y, z)
         iso = self.__iso_to_screenspace_coords(x, y, z)
 
         # hurray, it was so simple:
         layer = z * self.__map_height - y * 2 + (x % 2 != 0)
 
-        sprite = self.__get_cell_sprite(x, y, z, layer)
+        sprite = self.__get_cell_sprite(x, y, z)
         sprite.x = iso[0]
         sprite.y = iso[1]
         sprite.z = layer
@@ -165,7 +136,7 @@ class HexaMap(ActorGroup):
     def make_cell_name(x, y, z):
         return "cell[%i,%i,%i]" % (x, y, z)
 
-    def __get_cell_sprite(self, x, y, z, layer):
+    def __get_cell_sprite(self, x, y, z):
         # TODO:a nettoyer, utiliser un defaultdict
         symbol = "common"
         if z >= self.__thickness:
