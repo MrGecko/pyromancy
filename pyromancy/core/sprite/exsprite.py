@@ -37,7 +37,9 @@ class ExSprite(Sprite):
 class ZExSprite(ZSprite):
     def __init__(self, tileset, x=0, y=0, z=0, start_frame=0, batch=None, group=None):
         self.__tileset = tileset
-        super(ZExSprite, self).__init__(x=x, y=y, z=z, img=self.__tileset["frames"][start_frame], batch=batch,
+        super(ZExSprite, self).__init__(x=x, y=y, z=z,
+                                        img=self.__tileset["frames"][start_frame],
+                                        batch=batch,
                                         group=group)
 
     @property

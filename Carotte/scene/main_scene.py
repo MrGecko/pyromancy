@@ -24,8 +24,6 @@ class MainScene(Scene):
 
         self.load_resources()
         self.egg = egg
-
-
         # group_manager.pprint()
 
     def start(self):

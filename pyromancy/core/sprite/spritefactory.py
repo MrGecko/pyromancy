@@ -48,7 +48,9 @@ class SpriteFactory(Actor):
         del kargs["layer"]
 
         if not "batch" in kargs or kargs["batch"] is None:
-            raise ValueError("[Error SpriteFactory] You should provide a valid value for the 'Batch' argument")
+            current_batch = self.__scene.root.find("batch_manager").current_batch
+            kargs["batch"] = current_batch
+            # raise ValueError("[Error SpriteFactory] You should provide a valid value for the 'Batch' argument")
 
         new_sprite = sprite_impl(tileset, **kargs)
         #self.__sprites[symbol] = new_sprite

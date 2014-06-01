@@ -3,37 +3,38 @@ from random import choice
 from pyglet.window import key
 
 from pyromancy.core.gamestate.scenestate import SceneState
-from pyromancy.standard.actor.physic.position_actor import PositionActor
-from pyromancy.standard.actor.level.HexaMap import HexaMap
 
 __author__ = 'Gecko'
 
 
 class PlayGameState(SceneState):
-    def __init__(self, scene, lock=1):
+    def __init__(self, scene, lock=0.5):
         super(PlayGameState, self).__init__(scene, lock)
 
     def process_keyboard(self, handler, dt):
         self.process_camera(handler, dt)
 
         if handler[key.SPACE]:
-            self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
             hexamap = self.scene.root.find("hexamap")
             if hexamap:
                 hexamap.gen_grid()
+                self.scene.root.find("geologist").initialize()
 
         if handler[key.H]:
             hexamap = self.scene.root.find("hexamap")
-            random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
-            # print random_cell,
-            new_cell = hexamap.add_cell(random_cell.x, random_cell.y, random_cell.z + 1)
-            # print new_cell
+            if hexamap:
+                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
+                # print random_cell,
+                new_cell = hexamap.add_cell(random_cell.x, random_cell.y, random_cell.z + 1)
+                self.scene.root.find("geologist").identify(new_cell)
+                print new_cell
 
         if handler[key.E]:
             hexamap = self.scene.root.find("hexamap")
             if hexamap:
-                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
-                neighborhood = HexaMap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
+                hexagrid = hexamap.find("hexagrid")
+                random_cell = choice(hexagrid.get_active_children())
+                neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
                 print "random cell: %s" % random_cell
                 print "neighborhood: ", neighborhood
 

@@ -8,3 +8,4 @@ class HexaGrid(ActorGroup):
         super(HexaGrid, self).__init__("hexagrid")
 
         self.add_children(cells)
+

@@ -1,5 +1,7 @@
 import pyglet
+
 from pyromancy.core.actor.Actor import Actor
+
 #from pyromancy.core.actor.ActorGroup import ActorGroup
 
 __author__ = 'Gecko'
@@ -23,7 +25,7 @@ class BatchManager(Actor):
     @property
     def current_batch_name(self):
         if self.__current_batch_name is None:
-            raise KeyError("[batch manager] you need to add then select a batch")
+            raise KeyError("[batch manager] you need to add and then select at least one batch")
         return self.__current_batch_name
 
     def add_batch(self, name):

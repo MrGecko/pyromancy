@@ -8,17 +8,13 @@ __author__ = 'Gecko'
 
 
 class HexaMap(ActorGroup):
-    TEXTURES = {
-        "common": "media.terrain.clay",
-        "bottom": "media.terrain.clay_empty.50",
-        "top": "media.terrain.clay.light"
-    }
-
-    def __init__(self, sprite_factory, cell_batch, (w, h, d, thickness), (cell_w, cell_h, edge_len)):
+    def __init__(self, scene, (w, h, d, thickness), (cell_w, cell_h, edge_len)):
         super(HexaMap, self).__init__("hexamap")
 
-        self.__cell_batch = cell_batch
-        self.__create_extended_sprite = sprite_factory.create_extended_zsprite
+        # self.__cell_batch = cell_batch
+        self.__scene = scene
+
+        self.__create_extended_sprite = self.__scene.root.find("sprite_factory").create_extended_zsprite
 
         self.__cell_width = cell_w
         self.__cell_height = cell_h
@@ -33,6 +29,26 @@ class HexaMap(ActorGroup):
         self.__thickness = thickness
 
         self.__heightmap = []
+
+    @property
+    def heightmap(self):
+        return self.__heightmap
+
+    @property
+    def map_depth(self):
+        return self.__map_depth
+
+    @property
+    def map_width(self):
+        return self.__map_width
+
+    @property
+    def map_height(self):
+        return self.__map_height
+
+    @property
+    def thickness(self):
+        return self.__thickness
 
     @property
     def cell_width(self):
@@ -50,8 +66,7 @@ class HexaMap(ActorGroup):
     def width_in_pixels(self):
         return self.__cell_height * self.__map_width
 
-    @staticmethod
-    def get_six_neighborhood_names(x, y, z):
+    def get_six_neighborhood_names(self, x, y, z):
         return [
             HexaMap.make_cell_name(x - 1, y, z),
             HexaMap.make_cell_name(x, y - 1, z),
@@ -61,9 +76,8 @@ class HexaMap(ActorGroup):
             HexaMap.make_cell_name(x - 1, y + 1, z)
         ]
 
-    @staticmethod
-    def get_eight_neighborhood_names(x, y, z):
-        names = HexaMap.get_six_neighborhood_names(x, y, z)
+    def get_eight_neighborhood_names(self, x, y, z):
+        names = self.get_six_neighborhood_names(x, y, z)
         names.extend([HexaMap.make_cell_name(x, y, z - 1),
                       HexaMap.make_cell_name(x, y, z + 1)])
         return names
@@ -93,13 +107,17 @@ class HexaMap(ActorGroup):
                 d_range = range(0, self.__thickness)
                 d_range += range(self.__thickness, self.__thickness + self.__heightmap[x + y * w], 1)
                 # a vertical stack of cells
-                carotte = [self.__create_cell(x, y, z) for z in d_range]
+                carotte = []
+                for z in d_range:
+                    new_name = HexaMap.make_cell_name(x, y, z)
+                    new_cell = Cell(new_name, x, y, z, None)
+                    carotte.append(new_cell)
                 grid.extend(carotte)
 
         hexagrid = HexaGrid(grid)
         self.add_child(hexagrid)
 
-    def __iso_to_screenspace_coords(self, x, y, z):
+    def iso_to_screenspace_coords(self, x, y, z):
         #horizontal coord
         x2 = x * self.__t
         #vertical coord with a shift for the odd columns
@@ -108,48 +126,16 @@ class HexaMap(ActorGroup):
 
         return x2, y2
 
-    def __create_cell(self, x, y, z):
-        new_name = HexaMap.make_cell_name(x, y, z)
-        iso = self.__iso_to_screenspace_coords(x, y, z)
-
-        # hurray, it was so simple:
-        layer = z * self.__map_height - y * 2 + (x % 2 != 0)
-
-        sprite = self.__get_cell_sprite(x, y, z)
-        sprite.x = iso[0]
-        sprite.y = iso[1]
-        sprite.z = layer
-
-        cell = Cell(new_name, x, y, z, sprite)
-        return cell
-
     def add_cell(self, x, y, z):
         new_name = HexaMap.make_cell_name(x, y, z)
-        cell = self.get_child("hexagrid").get_child(new_name)
+        hexagrid = self.get_child("hexagrid")
+        cell = hexagrid.get_child(new_name)
         if cell is None:
-            cell = self.__create_cell(x, y, z)
-
-            self.get_child("hexagrid").add_child(cell)
+            new_name = HexaMap.make_cell_name(x, y, z)
+            cell = Cell(new_name, x, y, z, None)
+            hexagrid.add_child(cell)
         return cell
 
     @staticmethod
     def make_cell_name(x, y, z):
         return "cell[%i,%i,%i]" % (x, y, z)
-
-    def __get_cell_sprite(self, x, y, z):
-        # TODO:a nettoyer
-        symbol = "common"
-        lvl = self.__heightmap[x + y * self.__map_width]
-        if z >= self.__thickness:
-            if lvl >= self.__map_depth * 0.55:
-                symbol = "top"
-        elif lvl <= self.__map_depth * 0.25:
-            symbol = "bottom"
-
-        new_sprite = self.__create_extended_sprite(
-            symbol=HexaMap.TEXTURES[symbol],
-            layer="hexamap",
-            batch=self.__cell_batch
-        )
-        return new_sprite
-
