@@ -11,9 +11,7 @@ class HexaMap(ActorGroup):
     def __init__(self, scene, (w, h, d, thickness), (cell_w, cell_h, edge_len)):
         super(HexaMap, self).__init__("hexamap")
 
-        # self.__cell_batch = cell_batch
         self.__scene = scene
-
         self.__create_extended_sprite = self.__scene.root.find("sprite_factory").create_extended_zsprite
 
         self.__cell_width = cell_w
@@ -100,7 +98,7 @@ class HexaMap(ActorGroup):
 
         w, h, d = self.__map_width - 1, self.__map_height - 1, self.__map_depth - 1
 
-        #create the cells
+        # create the cells
         grid = []
         for x in range(0, w):
             for y in range(0, h):
@@ -118,7 +116,7 @@ class HexaMap(ActorGroup):
         self.add_child(hexagrid)
 
     def iso_to_screenspace_coords(self, x, y, z):
-        #horizontal coord
+        # horizontal coord
         x2 = x * self.__t
         #vertical coord with a shift for the odd columns
         k = y * self.__q + (self.__edge_length - 1) * z
