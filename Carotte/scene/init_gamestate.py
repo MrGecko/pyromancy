@@ -3,7 +3,7 @@ from pyromancy.standard.actor.level.HexaMap import HexaMap
 from pyromancy.standard.actor.visual.sprite_actor import SpriteActor
 from pyromancy.standard.actor.physic.position_actor import PositionActor
 
-from core.actor.ActorGroup import ActorGroup
+from pyromancy.core.actor.ActorGroup import ActorGroup
 
 __author__ = 'Gecko'
 
@@ -34,7 +34,7 @@ class InitGameState(SceneState):
 
     def init_map(self):
         hexamap = HexaMap(self.__sprite_factory, self.batch_manager.current_batch,
-                          (80, 31, 4, 1), (59, 59, 25))
+                          (50, 31, 4, 1), (59, 59, 25))
 
         self.scene.root.find("game_objects").add_child(hexamap)
         hexamap.gen_grid()

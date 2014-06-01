@@ -1,5 +1,5 @@
-from core.actor.ActorGroup import ActorGroup
-from standard.actor.visual.sprite_actor import SpriteActor
+from pyromancy.core.actor.ActorGroup import ActorGroup
+from pyromancy.standard.actor.visual.sprite_actor import SpriteActor
 
 __author__ = 'Gecko'
 
