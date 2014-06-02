@@ -38,7 +38,6 @@ class PlayGameState(SceneState):
                 print "random cell: %s" % random_cell
                 print "neighborhood: ", neighborhood
 
-
     def process_camera(self, handler, dt):
         mvt_step = 800
         camera_dx = 0
@@ -59,7 +58,6 @@ class PlayGameState(SceneState):
         if camera:
             camera.target.x += camera_dx
             camera.target.y += camera_dy
-
 
     def update(self, dt):
         super(PlayGameState, self).update(dt)

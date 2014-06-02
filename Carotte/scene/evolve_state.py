@@ -1,5 +1,4 @@
 from Carotte.scene.play_gamestate import PlayGameState
-from pyromancy.standard.actor.physic.position_actor import PositionActor
 
 __author__ = 'Gecko'
 
@@ -16,7 +15,7 @@ class EvolveGameState(PlayGameState):
             # print "random cell: %s" % random_cell
             # print "neighborhood: ", neighborhood
 
-        self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
+            # self.scene.root.find("ship").send(PositionActor.MOVE, {"dx": 10, "dy": 5})
 
 
 

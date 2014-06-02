@@ -10,7 +10,7 @@ class Geologist(Actor):
     MINERALS = {
         "mud": 1,
         "clay": 2,
-        "granit": 3,
+        "granite": 3,
         "iron": 4,
         "salt": 5,
     }
@@ -60,18 +60,25 @@ class Geologist(Actor):
         minerals = {"clay"}
         neighbors = __hexamap.get_eight_neighborhood(x, y, z)
 
-        lclay = len([n for n in neighbors if n.data["material"] == "light_clay"])
-        nclay = len([n for n in neighbors if n.data["material"] == "normal_clay"])
-        dclay = len([n for n in neighbors if n.data["material"] == "dark_clay"])
+        lclay = 0
+        nclay = 0
+        dclay = 0
+        for n in neighbors:
+            if n.data["material"] == "light_clay":
+                lclay += 1
+            elif n.data["material"] == "normal_clay":
+                nclay += 1
+            elif n.data["material"] == "dark_clay":
+                dclay += 1
 
         if mat == "light_clay" and nclay >= 2:
             minerals.update({"clay", "mud"})
         if mat == "dark_clay" and dclay >= 3:
-            minerals.update({"granit", "clay"})
-        if mat == "dark_clay" and nclay >= 6:
+            minerals.update({"granite", "clay"})
+        if mat == "dark_clay" and nclay >= 5:
             minerals.update({"iron", "clay"})
         if mat == "dark_clay" and lclay >= 2:
-            minerals.update({"iron", "granit"})
+            minerals.update({"iron", "granite", "mud"})
         if mat == "light_clay" and lclay >= 2:
             minerals.update({"salt"})
 

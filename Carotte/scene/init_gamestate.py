@@ -15,7 +15,7 @@ class InitGameState(SceneState):
         super(InitGameState, self).__init__(scene)
         self.__game_objects = self.scene.root.find("game_objects")
         self.__sprite_factory = self.scene.root.find("sprite_factory")
-        self.init_actors()
+        # self.init_actors()
         self.init_map()
 
     def init_actors(self):
