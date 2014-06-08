@@ -3,6 +3,7 @@ from random import choice
 from pyglet.window import key
 
 from pyromancy.core.gamestate.scenestate import SceneState
+from pyromancy.standard.actor.physic.position_actor import PositionActor
 
 __author__ = 'Gecko'
 
@@ -61,5 +62,8 @@ class PlayGameState(SceneState):
 
     def update(self, dt):
         super(PlayGameState, self).update(dt)
+
+        self.scene.root.find("moebs").send(PositionActor.MOVE, {"dx": 0.15, "dy": 0.007, "dz": 0})
+
         if not self.locked:
             self.scene.next_step()

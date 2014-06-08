@@ -13,7 +13,7 @@ class Cell(ActorGroup):
             "material": "normal_clay",
             "minerals": {}
         }  # dummy data
-        # self.add_child(SpriteActor("%s.sprite" % self.name, sprite))
+
 
     def has_mineral(self, name):
         return name in [self.data["minerals"]]

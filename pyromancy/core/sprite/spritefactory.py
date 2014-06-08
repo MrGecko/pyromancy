@@ -1,6 +1,6 @@
 from pyromancy.core.actor.Actor import Actor
 
-from pyromancy.core.sprite.exsprite import ExSprite, ZExSprite
+from pyromancy.core.sprite.exsprite import ZExSprite
 
 
 class SpriteFactory(Actor):
@@ -22,9 +22,6 @@ class SpriteFactory(Actor):
         if name not in self.__symbols:
             self.__symbols[name] = self.__scene.root.find("resource_manager").load_image(filename, options)
         return self.__symbols[name]
-
-    def create_extended_sprite(self, symbol, **kargs):
-        return self.create_sprite(ExSprite, symbol, **kargs)
 
     def create_extended_zsprite(self, symbol, **kargs):
         return self.create_sprite(ZExSprite, symbol, **kargs)

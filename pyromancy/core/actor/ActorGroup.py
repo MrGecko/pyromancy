@@ -5,7 +5,6 @@ from pyromancy.core.event.event_pool import EventPool
 
 
 class ActorGroup(Actor):
-
     def __init__(self, name, children=None):
         super(ActorGroup, self).__init__(name)
         self.__actives = dict()
@@ -82,14 +81,16 @@ class ActorGroup(Actor):
             return True
 
     def notify(self, event):
-        #give tokens to the actor to keep the event alive
+        # give tokens to the actor to keep the event alive
         #while notifying its children
         event.nb_token += 1
         #process the event at the actor level
+
         if self.fire(event):
             #notify the children
             for child in self.__actives.values():
                 child.notify(event)
+
         #get the tokens back and try to free the event
         #if it's not used anymore
         event.nb_token -= 1
@@ -97,6 +98,7 @@ class ActorGroup(Actor):
             EventPool.free_event(event)
 
     def send(self, message, arguments=None):
+
         if arguments is None:
             arguments = {}
         self.notify(EventPool.get_event(self, message, arguments))

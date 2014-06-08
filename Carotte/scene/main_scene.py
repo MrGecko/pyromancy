@@ -47,4 +47,7 @@ class MainScene(Scene):
         load_image("media.terrain.clay", "media/terrain/clayhex.png")
         load_image("media.terrain.clay.light", "media/terrain/clayhex_light.png")
 
+        load_image("media.character.moeb", "media/playerunits/moebs.png",
+                   options={"nbtile_width": 20, "nbtile_height": 20})
+
 

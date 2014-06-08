@@ -10,7 +10,7 @@ class SpriteActor(Actor):
 
     def __init__(self, name, sprite):
         super(SpriteActor, self).__init__(name)
-        assert sprite is not None
+        # assert sprite is not None
         self.__sprite = sprite
         self.register(PositionActor.MOVE, self.__move)
         self.register(PositionActor.MOVE_TO, self.__move_to)
@@ -23,11 +23,11 @@ class SpriteActor(Actor):
         return self.__sprite
 
     def __move(self, sender, kargs):
-        self.__sprite.set_relative_position(kargs["dx"], kargs["dy"])
+        self.__sprite.set_relative_position(kargs["dx"], kargs["dy"], kargs["dz"])
         return True
 
     def __move_to(self, sender, kargs):
-        self.__sprite.set_absolute_position(kargs["x"], kargs["y"])
+        self.__sprite.set_absolute_position(kargs["x"], kargs["y"], kargs["z"])
         return True
 
     def __object_enabled(self, sender, arguments):
@@ -38,3 +38,5 @@ class SpriteActor(Actor):
 
     def __object_added(self, sender, kargs):
         self.parent.send(PositionActor.REFRESH)
+
+
