@@ -33,11 +33,32 @@ class PlayGameState(SceneState):
         if handler[key.E]:
             hexamap = self.scene.root.find("hexamap")
             if hexamap:
-                hexagrid = hexamap.find("hexagrid")
+                hexagrid = hexamap.get_child("hexagrid")
                 random_cell = choice(hexagrid.get_active_children())
                 neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
                 print "random cell: %s" % random_cell
                 print "neighborhood: ", neighborhood
+
+        if handler[key.F]:
+            moeb = self.scene.root.find("moeb")
+            moeb.send(PositionActor.MOVE_TO, {"x": 50, "y": 50})
+
+        dx = 0
+        dy = 0
+        if handler[key.RIGHT]:
+            dx += 1.0
+        if handler[key.LEFT]:
+            dx += -1.0
+        if handler[key.UP]:
+            dy += 1.0
+        if handler[key.DOWN]:
+            dy += -1.0
+
+        if dx != 0 or dy != 0:
+            moeb = self.scene.root.find("moeb")
+            hexamap = self.scene.root.find("hexamap")
+            moeb.send(PositionActor.MOVE, {"dx": dx, "dy": dy})
+            hexamap.get_obj_layer(moeb)
 
     def process_camera(self, handler, dt):
         mvt_step = 800
@@ -63,13 +84,16 @@ class PlayGameState(SceneState):
     def update(self, dt):
         super(PlayGameState, self).update(dt)
 
-        moebs = self.scene.root.find("moebs").get_active_children()
-        hexamap = self.scene.root.find("hexamap")
-        for moeb in moebs:
-            moeb.send(PositionActor.MOVE, {"dx": 0.2, "dy": 0.007, "dz": 0})
-            # pos = moeb.get_child("position")
-            #z = pos.z * hexamap.map_height - pos.y * 2 + (pos.x % 2 != 0)
-            #moeb.send(PositionActor.MOVE_TO, {"x": 0, "y": 0, "z": int(z)})
+        # moebs = self.scene.root.find("moebs").get_active_children()
+        #hexamap = self.scene.root.find("hexamap")
+        #for moeb in moebs:
+        #    moeb.send(PositionActor.MOVE, {"dx": 0.18, "dy": 0.04})
+        #    pos = moeb.get_child("position")
+        #    cell = hexamap.get_cell_from_screenspace_coords(pos.x, pos.y, pos.z)
+        #    if cell:
+        #        test = hexamap.get_obj_layer(moeb)
+        #        new_z = cell.get_child("sprite").sprite.z
+        #        pos.send(PositionActor.MOVE_TO, {"z": new_z})
 
         if not self.locked:
             self.scene.next_step()

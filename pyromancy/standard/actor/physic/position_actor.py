@@ -36,9 +36,9 @@ class PositionActor(ActorGroup):
 
     def __move_to(self, sender, kargs):
         if sender is not None:
-            dx = kargs["x"] - self.__x
-            dy = kargs["y"] - self.__y
-            dz = kargs["z"] - self.__z
+            dx = kargs["x"] - self.__x if "x" in kargs else 0
+            dy = kargs["y"] - self.__y if "y" in kargs else 0
+            dz = kargs["z"] - self.__z if "z" in kargs else 0
             if dx != 0 or dy != 0 or dz != 0:
                 sender.send(PositionActor.MOVE, {"dx": dx, "dy": dy, "dz": dz})
                 # else:
@@ -47,6 +47,14 @@ class PositionActor(ActorGroup):
         return False
 
     def __move(self, sender, kargs):
+
+        if "dx" not in kargs:
+            kargs["dx"] = 0
+        if "dy" not in kargs:
+            kargs["dy"] = 0
+        if "dz" not in kargs:
+            kargs["dz"] = 0
+
         if self.__relative_actor is not None:
             rel_pos = self.__relative_actor.get_child("position")
             if rel_pos is not None:

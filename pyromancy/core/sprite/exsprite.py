@@ -12,6 +12,10 @@ class ZExSprite(ZSprite):
                                         group=group)
 
     @property
+    def center(self):
+        return self.x + self.__tileset["tilewidth"] * 0.5, self.y + self.__tileset["tileheight"] * 0.5
+
+    @property
     def group(self):
         return self._get_group()
 

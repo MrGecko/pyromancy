@@ -1,6 +1,9 @@
 from collections import defaultdict
 from pprint import pprint
 
+from pyromancy.standard.actor.physic.collision_nine_rect import CollisionNineRect
+
+
 __author__ = 'Gecko'
 from pyromancy.core.actor.Actor import Actor
 from pyromancy.standard.actor.visual.sprite_actor import SpriteActor
@@ -102,14 +105,23 @@ class Geologist(Actor):
         )
 
         # associate a sprite actor to the cell
-        sprite_x, sprite_y = __hexamap.iso_to_screenspace_coords(x, y, z)
-        sprite_z = z * __hexamap.map_height - y * 2 + (x % 2 != 0)
-
+        sprite_x, sprite_y, sprite_z = __hexamap.iso_to_screenspace_coords(x, y, z)
         new_sprite.x = sprite_x
         new_sprite.y = sprite_y
         new_sprite.z = sprite_z
 
-        cell.add_child(SpriteActor("sprite[%i,%i,%i]" % (sprite_x, sprite_y, sprite_z), new_sprite))
+        tx, ty, tz = __hexamap.screenspace_to_iso_coords(sprite_x, sprite_y, sprite_z)
+        assert (x, y, z) == (tx, ty, tz)
+
+        cell.add_child(SpriteActor("sprite", new_sprite))
+
+        # nince collision rect
+        u = (__hexamap.cell_width - __hexamap.edge_length) * 0.5
+        bl = (sprite_x, sprite_y, u, u)
+        br = (sprite_x + __hexamap.cell_width - u, sprite_y, u, u)
+        tr = (sprite_x + __hexamap.cell_width - u, sprite_y + __hexamap.cell_height - u, u, u)
+        tl = (sprite_x, sprite_y + __hexamap.cell_height - u, u, u)
+        cell.add_child(CollisionNineRect("cell_collision", bl, br, tr, tl))
 
 
     def pprint_minerals(self):
