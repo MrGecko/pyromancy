@@ -124,6 +124,14 @@ class HexaMap(ActorGroup):
 
         return x2, y2
 
+    def screenpace_to_iso_coords(self, x, y):
+
+        x2 = 0
+        y2 = 0
+        z2 = 0
+
+        return x2, y2, z2
+
     def add_cell(self, x, y, z):
         new_name = HexaMap.make_cell_name(x, y, z)
         hexagrid = self.get_child("hexagrid")

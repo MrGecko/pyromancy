@@ -41,7 +41,7 @@ class MainScene(Scene):
 
         load_image = self.root.find("sprite_factory").load_image
         # load_image("media.ui.economy-button", "media/ui/economy-button.png", options={"nbtile_width": 3})
-        load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
+        # load_image("media.playerunit.light.sparrow.Rebel", "media/playerunits/rebel-sparrow/light-ship.png")
 
         load_image("media.terrain.clay_empty.50", "media/terrain/clayhex_empty_50.png")
         load_image("media.terrain.clay", "media/terrain/clayhex.png")

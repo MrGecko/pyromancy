@@ -63,7 +63,13 @@ class PlayGameState(SceneState):
     def update(self, dt):
         super(PlayGameState, self).update(dt)
 
-        self.scene.root.find("moebs").send(PositionActor.MOVE, {"dx": 0.15, "dy": 0.007, "dz": 0})
+        moebs = self.scene.root.find("moebs").get_active_children()
+        hexamap = self.scene.root.find("hexamap")
+        for moeb in moebs:
+            moeb.send(PositionActor.MOVE, {"dx": 0.2, "dy": 0.007, "dz": 0})
+            # pos = moeb.get_child("position")
+            #z = pos.z * hexamap.map_height - pos.y * 2 + (pos.x % 2 != 0)
+            #moeb.send(PositionActor.MOVE_TO, {"x": 0, "y": 0, "z": int(z)})
 
         if not self.locked:
             self.scene.next_step()

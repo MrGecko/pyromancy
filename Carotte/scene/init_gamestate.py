@@ -35,14 +35,14 @@ class InitGameState(SceneState):
         #ship_actor.add_child(ship_weapon)
         #self.__game_objects.add_child(ship_actor)
         moebs = ActorGroup("moebs")
-        for i in range(0, 200):
+        for i in range(0, 50):
             moeb_sprite = self.__sprite_factory.create_extended_zsprite(
                 "media.character.moeb",
                 layer="moebs",
                 batch=self.batch_manager.current_batch,
                 start_frame=0
             )
-            moeb_sprite.set_animation([1, 2, 3, 4], 0.18)
+            moeb_sprite.set_animation([1, 2, 3, 4], 0.22)
 
             moeb_actor = ActorGroup("moeb%i" % i, [PositionActor(rdi(200, 2000), rdi(100, 1000), 100),
                                                    SpriteActor("moeb_sprite%i" % i, moeb_sprite)])
