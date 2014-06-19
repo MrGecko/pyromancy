@@ -1,5 +1,6 @@
 from pyromancy.core.gamestate.scenestate import SceneState
 from pyromancy.standard.actor.level.HexaMap import HexaMap
+from pyromancy.standard.actor.visual.mesh_actor import MeshActor
 from pyromancy.standard.actor.visual.sprite_actor import SpriteActor
 from pyromancy.standard.actor.physic.position_actor import PositionActor
 from pyromancy.core.actor.ActorGroup import ActorGroup
@@ -15,9 +16,11 @@ class InitGameState(SceneState):
         super(InitGameState, self).__init__(scene)
         self.__game_objects = self.scene.root.find("game_objects")
         self.__sprite_factory = self.scene.root.find("sprite_factory")
+        self.__mesh_factory = self.scene.root.find("mesh_factory")
 
         self.init_map()
-        self.init_actors()
+        # self.init_actors()
+        self.test_init_mesh()
 
     def init_actors(self):
         # ship_sprite = self.__sprite_factory.create_extended_sprite(
@@ -46,6 +49,17 @@ class InitGameState(SceneState):
         moebs.add_child(moeb_actor)
 
         self.__game_objects.add_child(moebs)
+
+    def test_init_mesh(self):
+        # todo: ne pas ul 20x les mêmes données
+        #todo: utiliser les group pour faire des translates des objs
+        for i in range(0, 500):
+            mesh = self.__mesh_factory.create_mesh("media.terrain.mesh.hexagon")
+
+            mesh.vertex_list.vertices = [v + i * 50 for v in mesh.vertex_list.vertices]
+
+            mesh_actor = MeshActor("test_mesh_actor%i" % i, mesh)
+            self.__game_objects.add_child(mesh_actor)
 
     def init_map(self):
         # create the hexamap

@@ -1,9 +1,6 @@
-from random import choice
-
 from pyglet.window import key
 
 from pyromancy.core.gamestate.scenestate import SceneState
-from pyromancy.standard.actor.physic.position_actor import PositionActor
 
 __author__ = 'Gecko'
 
@@ -15,50 +12,50 @@ class PlayGameState(SceneState):
     def process_keyboard(self, handler, dt):
         self.process_camera(handler, dt)
 
-        if handler[key.SPACE]:
-            hexamap = self.scene.root.find("hexamap")
-            if hexamap:
-                hexamap.gen_grid()
-                self.scene.root.find("geologist").initialize()
-
-        if handler[key.H]:
-            hexamap = self.scene.root.find("hexamap")
-            if hexamap:
-                random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
-                # print random_cell,
-                new_cell = hexamap.add_cell(random_cell.x, random_cell.y, random_cell.z + 1)
-                self.scene.root.find("geologist").identify(new_cell)
-                print new_cell
-
-        if handler[key.E]:
-            hexamap = self.scene.root.find("hexamap")
-            if hexamap:
-                hexagrid = hexamap.get_child("hexagrid")
-                random_cell = choice(hexagrid.get_active_children())
-                neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
-                print "random cell: %s" % random_cell
-                print "neighborhood: ", neighborhood
-
-        if handler[key.F]:
-            moeb = self.scene.root.find("moeb")
-            moeb.send(PositionActor.MOVE_TO, {"x": 50, "y": 50})
-
-        dx = 0
-        dy = 0
-        if handler[key.RIGHT]:
-            dx += 1.0
-        if handler[key.LEFT]:
-            dx += -1.0
-        if handler[key.UP]:
-            dy += 1.0
-        if handler[key.DOWN]:
-            dy += -1.0
-
-        if dx != 0 or dy != 0:
-            moeb = self.scene.root.find("moeb")
-            hexamap = self.scene.root.find("hexamap")
-            moeb.send(PositionActor.MOVE, {"dx": dx, "dy": dy})
-            hexamap.get_obj_layer(moeb)
+        # if handler[key.SPACE]:
+        #    hexamap = self.scene.root.find("hexamap")
+        #    if hexamap:
+        #        hexamap.gen_grid()
+        #        self.scene.root.find("geologist").initialize()
+        #
+        #if handler[key.H]:
+        #    hexamap = self.scene.root.find("hexamap")
+        #    if hexamap:
+        #        random_cell = choice(hexamap.get_child("hexagrid").get_active_children())
+        #        # print random_cell,
+        #        new_cell = hexamap.add_cell(random_cell.x, random_cell.y, random_cell.z + 1)
+        #        self.scene.root.find("geologist").identify(new_cell)
+        #        print new_cell
+        #
+        #if handler[key.E]:
+        #    hexamap = self.scene.root.find("hexamap")
+        #    if hexamap:
+        #        hexagrid = hexamap.get_child("hexagrid")
+        #        random_cell = choice(hexagrid.get_active_children())
+        #        neighborhood = hexamap.get_eight_neighborhood(random_cell.x, random_cell.y, random_cell.z)
+        #        print "random cell: %s" % random_cell
+        #        print "neighborhood: ", neighborhood
+        #
+        #if handler[key.F]:
+        #    moeb = self.scene.root.find("moeb")
+        #    moeb.send(PositionActor.MOVE_TO, {"x": 50, "y": 50})
+        #
+        #dx = 0
+        #dy = 0
+        #if handler[key.RIGHT]:
+        #    dx += 1.0
+        #if handler[key.LEFT]:
+        #    dx += -1.0
+        #if handler[key.UP]:
+        #    dy += 1.0
+        #if handler[key.DOWN]:
+        #    dy += -1.0
+        #
+        #if dx != 0 or dy != 0:
+        #    moeb = self.scene.root.find("moeb")
+        #    hexamap = self.scene.root.find("hexamap")
+        #    moeb.send(PositionActor.MOVE, {"dx": dx, "dy": dy})
+        #    hexamap.get_obj_layer(moeb)
 
     def process_camera(self, handler, dt):
         mvt_step = 800

@@ -4,8 +4,10 @@ Created on 9 avr. 2012
 @author: Gecko
 """
 import pyglet
+
 from pyromancy.core.actor.ActorGroup import ActorGroup
 from pyromancy.core.gamestate.manager import StateManager
+from pyromancy.core.mesh.mesh_factory import MeshFactory
 from pyromancy.core.rendering.batch_manager import BatchManager
 from pyromancy.core.rendering.group_manager import GroupManager
 from pyromancy.core.resource.resource_manager import ResourceManager
@@ -21,6 +23,7 @@ class Scene(StateManager):
         self.__root = ActorGroup("root")
         self.__root.add_child(GroupManager("group_manager"))
         self.__root.add_child(SpriteFactory("sprite_factory", self))
+        self.__root.add_child(MeshFactory("mesh_factory", self))
         self.__root.add_child(ResourceManager("resource_manager"))
         self.__root.add_child(BatchManager("batch_manager"))
         self.__root.add_child(BatchManager("hud_batch_manager"))
@@ -56,7 +59,7 @@ class Scene(StateManager):
             self.current.draw()
 
     def draw_head_display(self):
-        if self.__show_fps:
+        if self.__show_fps or True:
             self.__fps_clock.draw()
         if not self.empty:
             self.current.draw_head_display()

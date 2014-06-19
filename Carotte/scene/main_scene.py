@@ -1,7 +1,10 @@
+import pyglet
+
 from pyromancy.core.scene.scene import Scene
 from init_gamestate import InitGameState
 from play_gamestate import PlayGameState
 from Carotte.scene.evolve_state import EvolveGameState
+
 
 __author__ = 'Gecko'
 
@@ -49,5 +52,17 @@ class MainScene(Scene):
 
         load_image("media.character.moeb", "media/playerunits/moebs.png",
                    options={"nbtile_width": 20, "nbtile_height": 20})
+
+        load_mesh = self.root.find("mesh_factory").load_mesh_data
+
+        load_mesh("media.terrain.mesh.hexagon", {
+            'vertex_count': 4,
+            'mode': pyglet.gl.GL_TRIANGLES,
+            'faces': [0, 1, 2, 0, 2, 3],
+            'data': [('v2i/static', (100, 100,
+                                     150, 100,
+                                     150, 150,
+                                     100, 150)), ]
+        })
 
 
