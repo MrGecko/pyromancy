@@ -51,14 +51,12 @@ class InitGameState(SceneState):
         self.__game_objects.add_child(moebs)
 
     def test_init_mesh(self):
-        # todo: ne pas ul 20x les mêmes données
+        # todo: ne pas ul 20x les memes donnees
         #todo: utiliser les group pour faire des translates des objs
-        for i in range(0, 500):
+
+        for i in range(0, 10):
             mesh = self.__mesh_factory.create_mesh("media.terrain.mesh.hexagon")
-
-            mesh.vertex_list.vertices = [v + i * 50 for v in mesh.vertex_list.vertices]
-
-            mesh_actor = MeshActor("test_mesh_actor%i" % i, mesh)
+            mesh_actor = MeshActor("test_mesh_actor%i" % i, mesh, PositionActor(i * 50, 10))
             self.__game_objects.add_child(mesh_actor)
 
     def init_map(self):
