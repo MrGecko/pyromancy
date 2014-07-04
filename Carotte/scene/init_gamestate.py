@@ -1,6 +1,5 @@
 from pyromancy.core.gamestate.scenestate import SceneState
 from pyromancy.standard.actor.level.HexaMap import HexaMap
-from pyromancy.standard.actor.visual.mesh_actor import MeshActor
 from pyromancy.standard.actor.visual.sprite_actor import SpriteActor
 from pyromancy.standard.actor.physic.position_actor import PositionActor
 from pyromancy.core.actor.ActorGroup import ActorGroup
@@ -54,10 +53,12 @@ class InitGameState(SceneState):
         # todo: ne pas ul 20x les memes donnees
         #todo: utiliser les group pour faire des translates des objs
 
-        for i in range(0, 10):
-            mesh = self.__mesh_factory.create_mesh("media.terrain.mesh.hexagon")
-            mesh_actor = MeshActor("test_mesh_actor%i" % i, mesh, PositionActor(i * 50, 10))
-            self.__game_objects.add_child(mesh_actor)
+
+
+        for i in range(0, 5):
+            mesh = self.__mesh_factory.create_mesh("media.terrain.mesh.hexagon", position=PositionActor(i * 10, 0))
+            self.__game_objects.add_child(mesh)
+
 
     def init_map(self):
         # create the hexamap

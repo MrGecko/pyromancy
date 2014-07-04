@@ -25,6 +25,7 @@ class SceneState(TimeLockedState):
     def draw(self):
         for batch in self.__batch_manager.batches:
             batch.draw()
+            pass
 
     def draw_head_display(self):
         for batch in self.__hud_batch_manager.batches:

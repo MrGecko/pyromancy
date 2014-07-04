@@ -24,14 +24,14 @@ class MeshFactory(Actor):
         return self.__symbols[name]
 
 
-    def create_mesh(self, symbol, **kargs):
+    def create_mesh(self, symbol, **new_kargs):
 
         if isinstance(symbol, basestring):
             if symbol not in self.__symbols:
                 raise "[Warning MeshFactory] symbol '%s' does not exist" % symbol
 
         kargs = self.__symbols[symbol]
-
+        kargs.update(new_kargs)
         # if not "layer" in kargs:
         #  raise KeyError("[Error MeshFactory] You should provide a layer name for this mesh")
 
@@ -43,6 +43,7 @@ class MeshFactory(Actor):
             kargs["batch"] = current_batch
 
         #vertex_count, mode, batch, group, *data
+        # print kargs
         new_mesh = Mesh(**kargs)
 
         return new_mesh

@@ -59,7 +59,7 @@ class Scene(StateManager):
             self.current.draw()
 
     def draw_head_display(self):
-        if self.__show_fps or True:
+        if self.__show_fps:
             self.__fps_clock.draw()
         if not self.empty:
             self.current.draw_head_display()
